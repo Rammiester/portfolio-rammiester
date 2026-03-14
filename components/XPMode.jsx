@@ -8,7 +8,7 @@ import {
   Folder, FileText, Recycle, 
   Gamepad2, Mail, Info,
   Search, Menu, Monitor, Music,
-  Image as ImageIcon, Settings, HelpCircle, ExternalLink, LogIn, LogOut, ShieldCheck
+  Image as ImageIcon, Settings, HelpCircle, ExternalLink, LogIn, LogOut, ShieldCheck, Download
 } from 'lucide-react';
 import { portfolioData } from '../lib/data';
 import { useTheme } from '../context/ThemeContext';
@@ -165,11 +165,27 @@ const DesktopIcon = ({ icon: Icon, label, onClick, index }) => (
   </motion.button>
 );
 
+const FolderIcon = ({ icon: Icon, label, onClick, isDarkMode }) => (
+  <div 
+    onClick={onClick}
+    className={`w-24 flex flex-col items-center gap-1 p-2 rounded cursor-pointer group transition-colors ${
+      isDarkMode ? 'hover:bg-[#444]' : 'hover:bg-blue-100'
+    }`}
+  >
+    <Icon size={48} strokeWidth={1} className={isDarkMode ? "text-blue-400" : "text-blue-600"} />
+    <span className={`text-xs text-center break-words w-full ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+      {label}
+    </span>
+  </div>
+);
+
 export default function XPMode() {
   const { isDarkMode, toggleDarkMode, profile, setProfile } = useTheme();
   const [xpColorScheme, setXpColorScheme] = useState('blue'); // blue, olive, silver
   const [openWindows, setOpenWindows] = useState({
     about: false,
+    systemProps: false,
+    secrets: false,
     projects: false,
     resume: false,
     contact: false,
@@ -268,17 +284,19 @@ export default function XPMode() {
             const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
             const response = await ai.models.generateContent({
               model: "gemini-3-flash-preview",
-              contents: [
-                {
-                  inlineData: {
-                    data: base64Data,
-                    mimeType: "application/pdf"
+              contents: {
+                parts: [
+                  {
+                    inlineData: {
+                      data: base64Data,
+                      mimeType: "application/pdf"
+                    }
+                  },
+                  {
+                    text: "Extract the following details from this resume in JSON format: name, title, email, location, bio, skills (array of strings), experience (array of {company, role, period, description}), projects (array of {title, description, tech (array of strings)}). Return ONLY the JSON object."
                   }
-                },
-                {
-                  text: "Extract the following details from this resume in JSON format: name, title, email, location, bio, skills (array of strings), experience (array of {company, role, period, description}), projects (array of {title, description, tech (array of strings)}). Return ONLY the JSON object."
-                }
-              ],
+                ]
+              },
               config: {
                 responseMimeType: "application/json"
               }
@@ -527,11 +545,33 @@ export default function XPMode() {
         {openWindows.about && (
           <XPWindow 
             key="about"
-            title="My Computer - About Me" 
+            title="My Computer" 
             icon={Monitor} 
             onClose={() => toggleWindow('about')}
             zIndex={activeWindow === 'about' ? 50 : 40}
             onFocus={() => focusWindow('about')}
+            colorScheme={xpColorScheme}
+          >
+            <div className="flex flex-wrap gap-4 p-4">
+              <FolderIcon icon={Folder} label="Projects" onClick={() => toggleWindow('projects')} isDarkMode={isDarkMode} />
+              <FolderIcon icon={FileText} label="Resume.doc" onClick={() => toggleWindow('resume')} isDarkMode={isDarkMode} />
+              <FolderIcon icon={Monitor} label="System Properties" onClick={() => toggleWindow('systemProps')} isDarkMode={isDarkMode} />
+              {/* Hidden Secrets folder */}
+              <div className="opacity-0 hover:opacity-100 transition-opacity duration-300">
+                <FolderIcon icon={Folder} label="Secrets" onClick={() => toggleWindow('secrets')} isDarkMode={isDarkMode} />
+              </div>
+            </div>
+          </XPWindow>
+        )}
+
+        {openWindows.systemProps && (
+          <XPWindow 
+            key="systemProps"
+            title="System Properties" 
+            icon={Monitor} 
+            onClose={() => toggleWindow('systemProps')}
+            zIndex={activeWindow === 'systemProps' ? 50 : 40}
+            onFocus={() => focusWindow('systemProps')}
             colorScheme={xpColorScheme}
           >
             <div className={`space-y-4 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
@@ -557,6 +597,24 @@ export default function XPMode() {
                   ))}
                 </div>
               </div>
+            </div>
+          </XPWindow>
+        )}
+
+        {openWindows.secrets && (
+          <XPWindow 
+            key="secrets"
+            title="C:\Secrets" 
+            icon={Folder} 
+            onClose={() => toggleWindow('secrets')}
+            zIndex={activeWindow === 'secrets' ? 50 : 40}
+            onFocus={() => focusWindow('secrets')}
+            colorScheme={xpColorScheme}
+          >
+            <div className={`p-6 text-center space-y-4 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+              <h2 className="text-xl font-bold">You found the secret folder!</h2>
+              <p>There are 10 types of people in this world: those who understand binary, and those who don&apos;t.</p>
+              <p className="text-sm italic opacity-70">More secrets coming soon...</p>
             </div>
           </XPWindow>
         )}
@@ -605,8 +663,26 @@ export default function XPMode() {
             colorScheme={xpColorScheme}
           >
             <div className={`font-serif max-w-2xl mx-auto transition-colors duration-500 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>
-              <h1 className="text-3xl font-bold text-center mb-1">{profile.name}</h1>
-              <p className={`text-center text-sm mb-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{profile.title} | {profile.email || portfolioData.email}</p>
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex-1"></div>
+                <div className="flex-1 text-center">
+                  <h1 className="text-3xl font-bold mb-1">{profile.name}</h1>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{profile.title} | {profile.email || portfolioData.email}</p>
+                </div>
+                <div className="flex-1 flex justify-end">
+                  <a 
+                    href="/resume.pdf" 
+                    download
+                    className={`flex items-center gap-1 px-3 py-1 text-xs border rounded transition-colors ${
+                      isDarkMode 
+                        ? 'bg-[#333] border-[#555] text-gray-200 hover:bg-[#444]' 
+                        : 'bg-gray-100 border-gray-300 text-black hover:bg-gray-200'
+                    }`}
+                  >
+                    <Download size={12} /> Download PDF
+                  </a>
+                </div>
+              </div>
               
               <h2 className={`text-lg font-bold border-b-2 mb-2 ${isDarkMode ? 'border-gray-600' : 'border-black'}`}>EXPERIENCE</h2>
               {(profile.experience || portfolioData.experience).map((exp, i) => (
@@ -643,14 +719,21 @@ export default function XPMode() {
               </div>
               <div className={`flex items-center gap-2 border-b pb-1 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 <span className="text-gray-500 w-12">Subject:</span>
-                <input type="text" className="flex-1 outline-none font-bold bg-transparent" defaultValue="Hello from Portfolio!" />
+                <input id="contact-subject" type="text" className="flex-1 outline-none font-bold bg-transparent" defaultValue="Hello from Portfolio!" />
               </div>
               <textarea 
+                id="contact-body"
                 className="w-full h-48 mt-2 outline-none resize-none bg-transparent"
                 placeholder="Type your message here..."
               />
               <div className="flex justify-end">
-                <button className={`border-2 px-6 py-1 transition-colors ${
+                <button 
+                  onClick={() => {
+                    const subject = document.getElementById('contact-subject')?.value || 'Hello from Portfolio!';
+                    const body = document.getElementById('contact-body')?.value || '';
+                    window.location.href = `mailto:${profile.email || portfolioData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                  }}
+                  className={`border-2 px-6 py-1 transition-colors ${
                   isDarkMode 
                     ? 'bg-[#333] border-[#444] text-gray-200 hover:bg-[#444] active:border-gray-500' 
                     : 'bg-gray-100 border-gray-400 text-black hover:bg-gray-200 active:border-gray-600'
@@ -845,17 +928,22 @@ export default function XPMode() {
             colorScheme={xpColorScheme}
           >
             <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (
-                <div key={i} className="aspect-square border p-1 bg-white hover:border-blue-500 cursor-pointer transition-colors relative">
-                  <Image 
-                    src={`https://picsum.photos/seed/xp-${i}/200/200`} 
-                    alt={`Picture ${i}`} 
-                    fill
-                    className="object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-              ))}
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => {
+                const imgSrc = (portfolioData.pictures && portfolioData.pictures[i]) 
+                  ? portfolioData.pictures[i] 
+                  : `https://picsum.photos/seed/xp-${i + 1}/200/200`;
+                return (
+                  <div key={i} className="aspect-square border p-1 bg-white hover:border-blue-500 cursor-pointer transition-colors relative">
+                    <Image 
+                      src={imgSrc} 
+                      alt={`Picture ${i + 1}`} 
+                      fill
+                      className="object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                );
+              })}
             </div>
           </XPWindow>
         )}

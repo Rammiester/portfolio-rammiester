@@ -89,6 +89,13 @@ export default function CreativeMode() {
                 {item}
               </motion.button>
             ))}
+            <a 
+              href="/resume.pdf" 
+              download
+              className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full transition-colors flex items-center gap-2"
+            >
+              Resume
+            </a>
           </nav>
         </header>
 
@@ -106,7 +113,7 @@ export default function CreativeMode() {
                 className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10"
               >
                 <Image 
-                  src={`https://picsum.photos/seed/${currentProject.title}/800/800`} 
+                  src={currentProject.image || `https://picsum.photos/seed/${currentProject.title}/800/800`} 
                   alt={currentProject.title}
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -181,7 +188,7 @@ export default function CreativeMode() {
             <div className="flex items-center gap-4 w-full md:w-1/3">
               <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg relative">
                 <Image 
-                  src={`https://picsum.photos/seed/${currentProject.title}/100/100`} 
+                  src={currentProject.image || `https://picsum.photos/seed/${currentProject.title}/100/100`} 
                   alt="" 
                   fill
                   className="object-cover"

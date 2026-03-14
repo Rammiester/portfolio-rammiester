@@ -89,17 +89,38 @@ export default function DevMode() {
     if (!terminalInput.trim()) return;
     
     const newHistory = [...terminalHistory, { type: 'input', text: terminalInput }];
+    const cmd = terminalInput.trim().toLowerCase();
     
-    if (terminalInput === 'clear') {
+    if (cmd === 'clear') {
       setTerminalHistory([]);
-    } else if (terminalInput === 'ls') {
+      setTerminalInput('');
+      return;
+    } else if (cmd === 'ls') {
       newHistory.push({ type: 'output', text: 'README.md  projects.sh  resume.json  contact.api' });
-    } else if (terminalInput === 'help') {
-      newHistory.push({ type: 'output', text: 'Available commands: ls, clear, help, whoami, date, switch [xp|creative], theme [dark|dim|light]' });
-    } else if (terminalInput === 'whoami') {
+    } else if (cmd === 'help') {
+      newHistory.push({ type: 'output', text: 'Available commands: ls, clear, help, whoami, date, switch [xp|creative], theme [dark|dim|light], projects, experience, skills, resume, contact, achievements' });
+    } else if (cmd === 'whoami') {
       newHistory.push({ type: 'output', text: profile.name });
-    } else if (terminalInput.startsWith('switch ')) {
-      const target = terminalInput.split(' ')[1];
+    } else if (cmd === 'date') {
+      newHistory.push({ type: 'output', text: new Date().toString() });
+    } else if (cmd === 'projects') {
+      const projectsText = (profile.projects || portfolioData.projects).map(p => `- ${p.title}: ${p.description} [${p.tech.join(', ')}]`).join('\n');
+      newHistory.push({ type: 'output', text: projectsText });
+    } else if (cmd === 'experience') {
+      const expText = (profile.experience || portfolioData.experience).map(e => `- ${e.role} @ ${e.company} (${e.period})\n  ${e.description}`).join('\n\n');
+      newHistory.push({ type: 'output', text: expText });
+    } else if (cmd === 'skills') {
+      newHistory.push({ type: 'output', text: (profile.skills || portfolioData.skills).join(', ') });
+    } else if (cmd === 'resume') {
+      newHistory.push({ type: 'output', text: 'Downloading resume.pdf...' });
+      window.open('/resume.pdf', '_blank');
+    } else if (cmd === 'contact') {
+      newHistory.push({ type: 'output', text: `Email: ${profile.email || portfolioData.email}\nLinkedIn: ${profile.socials?.linkedin || portfolioData.socials.linkedin}\nGitHub: ${profile.socials?.github || portfolioData.socials.github}` });
+    } else if (cmd === 'achievements') {
+      const achText = (profile.achievements || portfolioData.achievements).map(a => `🏆 ${a}`).join('\n');
+      newHistory.push({ type: 'output', text: achText });
+    } else if (cmd.startsWith('switch ')) {
+      const target = cmd.split(' ')[1];
       if (['xp', 'creative'].includes(target)) {
         newHistory.push({ type: 'output', text: `Switching to ${target} mode...` });
         setTimeout(() => {
@@ -110,8 +131,8 @@ export default function DevMode() {
       } else {
         newHistory.push({ type: 'output', text: 'Usage: switch [xp|creative]' });
       }
-    } else if (terminalInput.startsWith('theme ')) {
-      const target = terminalInput.split(' ')[1];
+    } else if (cmd.startsWith('theme ')) {
+      const target = cmd.split(' ')[1];
       if (['dark', 'dim', 'light'].includes(target)) {
         handleThemeChange(target);
         newHistory.push({ type: 'output', text: `Theme changed to ${target}` });
@@ -119,7 +140,7 @@ export default function DevMode() {
         newHistory.push({ type: 'output', text: 'Usage: theme [dark|dim|light]' });
       }
     } else {
-      newHistory.push({ type: 'output', text: `command not found: ${terminalInput}` });
+      newHistory.push({ type: 'output', text: `command not found: ${cmd}` });
     }
     
     setTerminalHistory(newHistory);
@@ -434,8 +455,8 @@ export default function DevMode() {
                           onChange={(e) => setTerminalInput(e.target.value)}
                         />
                         <motion.div 
-                          animate={{ opacity: [1, 0] }}
-                          transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" }}
+                          animate={{ opacity: [1, 0, 1] }}
+                          transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
                           className="w-2 h-5 bg-gray-400 ml-[-100%] pointer-events-none"
                           style={{ display: terminalInput ? 'none' : 'block' }}
                         />
