@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: settings
+    // Document ID: setting name (e.g., 'musicProfileUrl')
+    // Fields:
+    //   - value: string (required) - The value of the setting
+    //   - updatedAt: timestamp (optional) - When it was updated
+    //   - updatedBy: string (optional) - UID of the admin
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "ramitg0@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidSetting(data) {
+      return data.keys().hasAll(['value']) &&
+             data.value is string &&
+             data.value.size() < 1000;
+    }
+
+    function isValidProfile(data) {
+      return data.name is string && data.name.size() < 100 &&
+             data.title is string && data.title.size() < 100 &&
+             data.bio is string && data.bio.size() < 1000 &&
+             data.location is string && data.location.size() < 100 &&
+             data.skills is list;
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidSetting(request.resource.data);
+    }
+
+    match /profile/main {
+      allow read: if true;
+      allow write: if isAdmin() && isValidProfile(request.resource.data);
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isAuthenticated() && request.auth.uid == userId && request.resource.data.role == 'user';
+      allow update: if isAdmin();
+    }
+  }
+}

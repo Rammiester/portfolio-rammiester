@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "Setting": {
+      "title": "Setting",
+      "description": "A global application setting",
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The value of the setting"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the setting was last updated"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "UID of the user who updated the setting"
+        }
+      },
+      "required": ["value"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "User portfolio data",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "title": { "type": "string" },
+        "bio": { "type": "string" },
+        "location": { "type": "string" },
+        "email": { "type": "string" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "projects": { "type": "array", "items": { "type": "object" } },
+        "experience": { "type": "array", "items": { "type": "object" } },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "Global settings for the application"
+    },
+    "/profile/main": {
+      "schema": "Profile",
+      "description": "The main portfolio profile data"
+    }
+  }
+}
