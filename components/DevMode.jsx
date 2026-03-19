@@ -213,9 +213,10 @@ export default function DevMode() {
           <span className={`text-xs border rounded-full px-2 py-0.5 ml-2 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} style={{ borderColor: colors.border }}>Public</span>
         </motion.div>
         
-        <div className="flex items-center gap-6 mt-4 text-sm relative">
+        <div className="flex items-center gap-4 mt-4 text-sm relative overflow-x-auto whitespace-nowrap scrollbar-hide pb-2 px-1">
           {[
             { id: 'readme', label: 'Code', icon: Code2 },
+            { id: 'projects', label: 'Terminal', icon: Terminal },
             { id: 'pull-requests', label: 'Pull requests', icon: GitPullRequest, count: 1 },
             { id: 'settings', label: 'Settings', icon: Bell },
           ].map((tab) => (
@@ -367,7 +368,7 @@ export default function DevMode() {
 
                     <h2 className="text-xl font-bold border-b pb-1 mt-8 mb-4" style={{ borderColor: colors.border }}>Skills</h2>
                     <div className="flex flex-wrap gap-2">
-                      {profile.skills.map((skill, i) => (
+                      {(profile.skills || portfolioData.skills).map((skill, i) => (
                         <motion.span 
                           key={`${skill}-${i}`} 
                           initial={{ scale: 0.8, opacity: 0 }}
@@ -398,28 +399,28 @@ export default function DevMode() {
                   </div>
                   <div className="p-4 h-[500px] overflow-y-auto text-sm">
                     <AnimatePresence initial={false}>
-                      {terminalHistory.map((line, i) => (
+                      {terminalHistory.filter(line => line).map((line, i) => (
                         <motion.div 
                           key={i} 
                           initial={{ opacity: 0, x: -5 }}
                           animate={{ opacity: 1, x: 0 }}
                           className="mb-1"
                         >
-                          {line.type === 'input' ? (
+                          {line?.type === 'input' ? (
                             <div className="flex gap-2">
                               <span className="text-green-400">➜</span>
                               <span className="text-blue-400">~/portfolio</span>
-                              <span className={theme === 'light' ? 'text-gray-800' : 'text-gray-300'}>{line.text}</span>
+                              <span className={theme === 'light' ? 'text-gray-800' : 'text-gray-300'}>{line?.text}</span>
                             </div>
                           ) : (
-                            <div className={`whitespace-pre-wrap ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{line.text}</div>
+                            <div className={`whitespace-pre-wrap ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{line?.text}</div>
                           )}
                         </motion.div>
                       ))}
                     </AnimatePresence>
                     
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {(profile.projects || portfolioData.projects).map((project, i) => (
+                      {(profile.projects || portfolioData.projects).filter(project => project).map((project, i) => (
                         <motion.div 
                           key={i} 
                           initial={{ opacity: 0, y: 20 }}
@@ -430,12 +431,12 @@ export default function DevMode() {
                           style={{ borderColor: colors.border, backgroundColor: colors.header }}
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-[#58a6ff] font-bold group-hover:underline">{project.title}</h3>
+                            <h3 className="text-[#58a6ff] font-bold group-hover:underline">{project?.title}</h3>
                             <ExternalLink size={14} className="text-gray-500" />
                           </div>
-                          <p className={`text-xs mb-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{project.description}</p>
+                          <p className={`text-xs mb-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>{project?.description}</p>
                           <div className="flex gap-2">
-                            {project.tech.map((t, j) => (
+                            {(project?.tech || []).map((t, j) => (
                               <span key={`${t}-${j}`} className="text-[10px] text-gray-500 border px-1.5 rounded" style={{ borderColor: colors.border }}>{t}</span>
                             ))}
                           </div>

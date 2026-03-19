@@ -15,7 +15,15 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'profile', 'main'), (snapshot) => {
       if (snapshot.exists()) {
-        setProfile(snapshot.data());
+        const data = snapshot.data();
+        setProfile({
+          ...portfolioData,
+          ...data,
+          socials: { ...portfolioData.socials, ...(data.socials || {}) },
+          skills: data.skills || portfolioData.skills,
+          experience: data.experience || portfolioData.experience,
+          projects: data.projects || portfolioData.projects
+        });
       }
     }, (error) => {
       console.error("Error fetching profile data:", error);

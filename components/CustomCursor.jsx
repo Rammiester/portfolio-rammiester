@@ -1,25 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { motion, useSpring, useMotionValue } from 'motion/react';
+import { motion } from 'motion/react';
 import { useTheme } from '../context/ThemeContext';
 
 export default function CustomCursor() {
   const { mode } = useTheme();
   const [isPointer, setIsPointer] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-
-  const springConfig = { damping: 25, stiffness: 700 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
+  const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
 
   useEffect(() => {
     const moveCursor = (e) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
+      setCursorPosition({ x: e.clientX, y: e.clientY });
       
       const target = e.target;
       setIsPointer(
@@ -41,7 +35,7 @@ export default function CustomCursor() {
       window.removeEventListener('mouseenter', handleMouseEnter);
       window.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [cursorX, cursorY]);
+  }, []);
 
   if (!isVisible) return null;
 
@@ -83,10 +77,9 @@ export default function CustomCursor() {
     <motion.div
       className="fixed top-0 left-0 pointer-events-none z-[99999] hidden md:block"
       style={{
-        x: cursorXSpring,
-        y: cursorYSpring,
-        translateX: '-50%',
-        translateY: '-50%',
+        left: `${cursorPosition.x}px`,
+        top: `${cursorPosition.y}px`,
+        transform: 'translate(-50%, -50%)',
       }}
     >
       <motion.div
