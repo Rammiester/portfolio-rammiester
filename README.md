@@ -29,29 +29,34 @@ A visually stunning, full-screen presentation mode.
 ## 👨‍💻 About Me
 
 **Ramit Kr. Gupta**
-*Software Engineer*
-📍 Bangalore, India | ✉️ ramitg89@gmail.com
+*Full-Stack / AI Software Engineer*
+📍 Bengaluru, India | ✉️ ramitg0@gmail.com
 
 **Bio:**
-Software Engineer with 1.5 years of experience in frontend development using React, Next.js, Redux, and TailwindCSS. Recently architected performance optimization reducing API calls by 90% and improving load times by 90%.
+Full-Stack / AI Software Engineer with 3.5+ years of experience, including 2+ years building production LLM and agentic systems. Shipped an inbound AI voice agent and a 7-agent Claude Code SDLC pipeline, alongside performance-critical full-stack work in React, Next.js, and Node.js.
 
 ### 🛠 Skills
-- **Frontend:** ReactJS, Next.js, Redux, TailwindCSS, Material-UI, Context API, Redux Toolkit
-- **Backend & DB:** Node.js, SQL (Postgres), REST APIs
-- **Languages & Tools:** JavaScript (ES6+), Git
+- **AI / Agents:** LLM & Agent Development (Claude, Anthropic API), Tool Calling, Twilio Voice
+- **Frontend:** ReactJS, Next.js, Redux, TailwindCSS, Context API
+- **Backend & DB:** Node.js, NestJS, TypeScript, SQL (Postgres), REST APIs
+- **Infra & Testing:** Docker, AWS, Vitest, Git
 
 ### 💼 Experience
 
-**Software Engineer @ Edstellar** *(Aug 2024 – Present)*
-Architected ReferenceDataContext solution reducing API calls by 90%. Developed and optimized responsive user interfaces with Next.js and TailwindCSS.
+**Software Development Engineer I @ Edstellar** *(Aug 2025 – Oct 2026, promoted from Junior Software Engineer)*
+Built an inbound AI voice agent (Twilio + Anthropic Claude) with tool calling and automated lead assignment. Orchestrated a 7-agent Claude Code SDLC pipeline with human-in-the-loop merge gates. Engineered a row-locked billing engine to prevent concurrent double-billing. Cut API calls 90% and shipped 130 Vitest tests; deployed on Docker/AWS.
 
-**Front-end Developer Intern @ Volopay** *(Feb 2024 – May 2024)*
+**Front-end Developer @ Volopay** *(Feb 2025 – May 2025)*
 Streamlined payment workflows in the Payment Squad, reducing user friction by 25%. Built reusable React components and integrated payment APIs.
 
-**Software Engineer @ Freelance** *(Mar 2023 – Jan 2024)*
+**Software Engineer @ Nexlerate** *(Mar 2023 – Jan 2025, Remote)*
 Built Stock Ninja Shopify app. Designed React-based app for autistic children. Developed ERP system with Laravel.
 
 ### 🚀 Projects
+
+**CaloraAI**
+Health-tracking bot combining n8n automation, Telegram, and Supabase for logging and insights.
+*Tech Stack:* n8n, Telegram API, Supabase
 
 **Smart Summarizer**
 Chrome Extension that summarizes web content via Gemini API. Features modular tabs and dark mode.

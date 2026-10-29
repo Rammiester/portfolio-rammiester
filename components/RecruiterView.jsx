@@ -53,31 +53,48 @@ export default function RecruiterView({ onBack }) {
           </div>
         </section>
 
-        {/* Engineering Highlights & Case Study */}
-        <section className="mb-20 grid md:grid-cols-2 gap-12">
-          <div>
-            <h3 className="text-xl font-bold uppercase tracking-wider text-gray-400 mb-6 border-b pb-2">Engineering Highlights</h3>
-            <ul className="space-y-4">
-              {(data.achievements || portfolioData.achievements).map((achievement, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="text-blue-500 mt-1">▹</span>
-                  <span className="text-gray-800 leading-relaxed">{achievement}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="text-xl font-bold uppercase tracking-wider text-gray-400 mb-6 border-b pb-2">Case Study</h3>
-            <h4 className="font-bold text-lg mb-2">{portfolioData.caseStudy.title}</h4>
-            <div className="space-y-4 text-sm text-gray-600">
-              <p><strong className="text-gray-900">Problem:</strong> {portfolioData.caseStudy.problem}</p>
-              <p><strong className="text-gray-900">Before:</strong> {portfolioData.caseStudy.architectureBefore}</p>
-              <p><strong className="text-gray-900">After:</strong> {portfolioData.caseStudy.architectureAfter}</p>
-              <p className="text-green-700 bg-green-50 p-3 rounded-lg border border-green-100">
-                <strong>Result:</strong> {portfolioData.caseStudy.performanceResult}
-              </p>
-            </div>
+        {/* Engineering Highlights */}
+        <section className="mb-20">
+          <h3 className="text-xl font-bold uppercase tracking-wider text-gray-400 mb-6 border-b pb-2">Engineering Highlights</h3>
+          <ul className="grid md:grid-cols-2 gap-x-12 gap-y-4">
+            {(data.achievements || portfolioData.achievements).map((achievement, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="text-blue-500 mt-1">▹</span>
+                <span className="text-gray-800 leading-relaxed">{achievement}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Case Studies */}
+        <section className="mb-20">
+          <h3 className="text-xl font-bold uppercase tracking-wider text-gray-400 mb-8 border-b pb-2">Case Studies</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            {(data.caseStudies || portfolioData.caseStudies).map((cs, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                {cs.image && (
+                  <div className="w-full relative aspect-[16/9] bg-gray-100">
+                    <Image
+                      src={cs.image}
+                      alt={cs.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <div className="p-8">
+                  <h4 className="font-bold text-lg mb-4">{cs.title}</h4>
+                  <div className="space-y-4 text-sm text-gray-600">
+                    <p><strong className="text-gray-900">Problem:</strong> {cs.problem}</p>
+                    <p><strong className="text-gray-900">Before:</strong> {cs.architectureBefore}</p>
+                    <p><strong className="text-gray-900">After:</strong> {cs.architectureAfter}</p>
+                    <p className="text-green-700 bg-green-50 p-3 rounded-lg border border-green-100">
+                      <strong>Result:</strong> {cs.performanceResult}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
